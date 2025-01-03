@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Exports\DosenPlottingExport;
 use App\Exports\PlottingExport;
 use App\Filament\Resources\DosenPlottingResource\Pages;
 use App\Filament\Resources\DosenPlottingResource\RelationManagers;
@@ -53,6 +54,8 @@ class DosenPlottingResource extends Resource
                             ->get()
                             ->pluck('matakuliah.nama_mk', 'id')
                     )
+                    ->searchable()
+                    ->required()
             ]);
     }
 
@@ -84,9 +87,15 @@ class DosenPlottingResource extends Resource
             ])
             ->headerActions([
                 Action::make('export')
-                    ->label('Export to Excel')
+                    ->label('Draft Mata Kuliah')
                     ->action(function () {
-                        return Excel::download(new PlottingExport, 'plotting.xlsx');
+                        return Excel::download(new PlottingExport, 'draft-mata-kuliah.xlsx');
+                    })
+                    ->icon('heroicon-o-arrow-down-tray'),
+                Action::make('export2')
+                    ->label('Draft Dosen')
+                    ->action(function () {
+                        return Excel::download(new DosenPlottingExport, 'draft-dosen.xlsx');
                     })
                     ->icon('heroicon-o-arrow-down-tray'),
             ])
