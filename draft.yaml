@@ -1,0 +1,88 @@
+models:
+    Dosen: 
+      nama_lengkap: text
+      nidn: string 
+    Matakuliah: 
+      kode_mk: string
+      nama_mk: text
+      sks: integer 
+    Plotting: 
+      dosen_id: foreign
+      matakuliah_id: foreign
+      kelas: string
+      semester: string
+      tahun: integer 
+
+
+controllers:
+  Dosen:
+    index: 
+      query: all
+      render: dosen.index with:dosens
+
+    create: 
+      render: dosen.create
+
+    store: 
+      validate: nama_lengkap, nidn
+      save: dosen
+      redirect: dosen.index
+
+    show: 
+      render: dosen.show with:dosen
+
+    edit:
+      render: dosen.edit with:dosen
+
+    update:
+      validate: nama_lengkap, nidn
+      update: dosen
+      redirect: dosen.index
+
+  Matakuliah:
+    index: 
+      query: all
+      render: matakuliah.index with:matakuliahs
+
+    create: 
+      render: matakuliah.create
+
+    store: 
+      validate: kode_mk, nama_mk, sks
+      save: matakuliah
+      redirect: matakuliah.index
+
+    show: 
+      render: matakuliah.show with:matakuliah
+
+    edit:
+      render: matakuliah.edit with:matakuliah
+
+    update:
+      validate: kode_mk, nama_mk, sks
+      update: matakuliah
+      redirect: matakuliah.index
+
+  Plotting:
+    index: 
+      query: all
+      render: plotting.index with:plottings
+
+    create: 
+      render: plotting.create
+
+    store: 
+      validate: dosen_id, matakuliah_id, kelas, semester, tahun
+      save: plotting
+      redirect: plotting.index
+
+    show: 
+      render: plotting.show with:plotting
+
+    edit:
+      render: plotting.edit with:plotting
+
+    update:
+      validate: dosen_id, matakuliah_id, kelas, semester, tahun
+      update: plotting
+      redirect: plotting.index

@@ -1,0 +1,40 @@
+created:
+    - app/Http/Controllers/DosenController.php
+    - app/Http/Controllers/MatakuliahController.php
+    - app/Http/Controllers/PlottingController.php
+    - database/factories/DosenFactory.php
+    - database/factories/MatakuliahFactory.php
+    - database/factories/PlottingFactory.php
+    - database/migrations/2024_12_23_080903_create_dosens_table.php
+    - database/migrations/2024_12_23_080904_create_matakuliahs_table.php
+    - database/migrations/2024_12_23_080905_create_plottings_table.php
+    - app/Models/Dosen.php
+    - app/Models/Matakuliah.php
+    - app/Models/Plotting.php
+    - tests/Feature/Http/Controllers/DosenControllerTest.php
+    - tests/Feature/Http/Controllers/MatakuliahControllerTest.php
+    - tests/Feature/Http/Controllers/PlottingControllerTest.php
+    - app/Http/Requests/DosenStoreRequest.php
+    - app/Http/Requests/DosenUpdateRequest.php
+    - app/Http/Requests/MatakuliahStoreRequest.php
+    - app/Http/Requests/MatakuliahUpdateRequest.php
+    - app/Http/Requests/PlottingStoreRequest.php
+    - app/Http/Requests/PlottingUpdateRequest.php
+    - resources/views/dosen/index.blade.php
+    - resources/views/dosen/create.blade.php
+    - resources/views/dosen/show.blade.php
+    - resources/views/dosen/edit.blade.php
+    - resources/views/matakuliah/index.blade.php
+    - resources/views/matakuliah/create.blade.php
+    - resources/views/matakuliah/show.blade.php
+    - resources/views/matakuliah/edit.blade.php
+    - resources/views/plotting/index.blade.php
+    - resources/views/plotting/create.blade.php
+    - resources/views/plotting/show.blade.php
+    - resources/views/plotting/edit.blade.php
+updated:
+    - routes/web.php
+models:
+    Dosen: { nama_lengkap: text, nidn: string }
+    Matakuliah: { kode_mk: string, nama_mk: text, sks: integer }
+    Plotting: { dosen_id: foreign, matakuliah_id: foreign, kelas: string, semester: string, tahun: integer }
