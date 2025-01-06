@@ -10,6 +10,8 @@ use App\Models\Dosen;
 use App\Models\DosenPlotting;
 use App\Models\Matakuliah;
 use App\Models\Plotting;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
+use BezhanSalleh\FilamentShield\Traits\HasShieldFormComponents;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -21,13 +23,27 @@ use Filament\Forms\Components\Select;
 use Maatwebsite\Excel\Facades\Excel;
 use Filament\Tables\Actions\Action;
 
-class DosenPlottingResource extends Resource
+class DosenPlottingResource extends Resource implements HasShieldPermissions
 {
+    use HasShieldFormComponents;
+
     protected static ?string $model = DosenPlotting::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user';
 
     protected static ?string $navigationGroup = 'Plotting';
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+        ];
+    }
 
     public static function form(Form $form): Form
     {

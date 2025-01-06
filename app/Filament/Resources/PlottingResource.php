@@ -8,6 +8,8 @@ use App\Exports\PlottingExport;
 use App\Filament\Resources\PlottingResource\Pages;
 use App\Filament\Resources\PlottingResource\RelationManagers;
 use App\Models\Plotting;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
+use BezhanSalleh\FilamentShield\Traits\HasShieldFormComponents;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -18,13 +20,27 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Select;
 
 
-class PlottingResource extends Resource
+class PlottingResource extends Resource implements HasShieldPermissions
 {
+    use HasShieldFormComponents;
+
     protected static ?string $model = Plotting::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     protected static ?string $navigationGroup = 'Plotting';
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+        ];
+    }
 
     public static function form(Form $form): Form
     {

@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\KonsentrasiResource\Pages;
 use App\Filament\Resources\KonsentrasiResource\RelationManagers;
 use App\Models\Konsentrasi;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
+use BezhanSalleh\FilamentShield\Traits\HasShieldFormComponents;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,13 +15,27 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class KonsentrasiResource extends Resource
+class KonsentrasiResource extends Resource implements HasShieldPermissions
 {
+    use HasShieldFormComponents;
+
     protected static ?string $model = Konsentrasi::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
 
     protected static ?string $navigationGroup = 'Master';
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+        ];
+    }
 
     public static function form(Form $form): Form
     {

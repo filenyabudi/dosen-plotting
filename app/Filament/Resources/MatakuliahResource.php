@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\MatakuliahResource\Pages;
 use App\Filament\Resources\MatakuliahResource\RelationManagers;
 use App\Models\Matakuliah;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
+use BezhanSalleh\FilamentShield\Traits\HasShieldFormComponents;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,13 +16,27 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Select;
 
-class MatakuliahResource extends Resource
+class MatakuliahResource extends Resource implements HasShieldPermissions
 {
+    use HasShieldFormComponents;
+
     protected static ?string $model = Matakuliah::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
     protected static ?string $navigationGroup = 'Master';
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+        ];
+    }
 
     public static function form(Form $form): Form
     {
