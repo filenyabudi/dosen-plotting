@@ -52,8 +52,8 @@
         <tr>
           <td rowspan="{{ count($item['nama_mk']) + 2 }}">{{ $loop->iteration }}</td>
           <td rowspan="{{ count($item['nama_mk']) + 2 }}">{{ $item['dosen_pengajar'] }}</td>
-          <td rowspan="{{ count($item['nama_mk']) + 2 }}"></td>
-          <td rowspan="{{ count($item['nama_mk']) + 2 }}"></td>
+          <td rowspan="{{ count($item['nama_mk']) + 2 }}">{{ $item['pangkat_golongan'] }}</td>
+          <td rowspan="{{ count($item['nama_mk']) + 2 }}">{{ $item['jabatan'] }}</td>
         </tr>
         @foreach ($item['nama_mk'] as $mk)
         <tr>

@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\KonsentrasiResource\Pages;
-use App\Filament\Resources\KonsentrasiResource\RelationManagers;
-use App\Models\Konsentrasi;
+use App\Filament\Resources\PangkatGolonganResource\Pages;
+use App\Filament\Resources\PangkatGolonganResource\RelationManagers;
+use App\Models\PangkatGolongan;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use BezhanSalleh\FilamentShield\Traits\HasShieldFormComponents;
 use Filament\Forms;
@@ -15,13 +15,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class KonsentrasiResource extends Resource implements HasShieldPermissions
+class PangkatGolonganResource extends Resource implements HasShieldPermissions
 {
     use HasShieldFormComponents;
 
-    protected static ?string $model = Konsentrasi::class;
+    protected static ?string $model = PangkatGolongan::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Master';
 
@@ -41,7 +41,7 @@ class KonsentrasiResource extends Resource implements HasShieldPermissions
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nama_konsentrasi')
+                Forms\Components\TextInput::make('nama_pangkat')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -51,7 +51,7 @@ class KonsentrasiResource extends Resource implements HasShieldPermissions
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nama_konsentrasi')
+                Tables\Columns\TextColumn::make('nama_pangkat')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -86,9 +86,9 @@ class KonsentrasiResource extends Resource implements HasShieldPermissions
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListKonsentrasis::route('/'),
-            'create' => Pages\CreateKonsentrasi::route('/create'),
-            'edit' => Pages\EditKonsentrasi::route('/{record}/edit'),
+            'index' => Pages\ListPangkatGolongans::route('/'),
+            'create' => Pages\CreatePangkatGolongan::route('/create'),
+            'edit' => Pages\EditPangkatGolongan::route('/{record}/edit'),
         ];
     }
 }

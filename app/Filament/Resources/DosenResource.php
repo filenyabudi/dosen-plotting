@@ -21,7 +21,7 @@ class DosenResource extends Resource implements HasShieldPermissions
 
     protected static ?string $model = Dosen::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $navigationGroup = 'Master';
 
@@ -42,13 +42,17 @@ class DosenResource extends Resource implements HasShieldPermissions
         return $form
             ->schema([
                 Forms\Components\TextInput::make('nidn')
-                    ->label('NIDN')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('nama_lengkap')
-                    ->label('Nama Lengkap')
                     ->required()
                     ->columnSpanFull(),
+                Forms\Components\Select::make('pangkat_golongan_id')
+                    ->relationship('pangkatGolongan', 'nama_pangkat')
+                    ->required(),
+                Forms\Components\Select::make('jabatan_id')
+                    ->relationship('jabatan', 'nama_jabatan')
+                    ->required(),
             ]);
     }
 
@@ -60,6 +64,12 @@ class DosenResource extends Resource implements HasShieldPermissions
                     ->searchable(),
                 Tables\Columns\TextColumn::make('nama_lengkap')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('pangkatGolongan.nama_pangkat')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('jabatan.nama_jabatan')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -74,7 +84,7 @@ class DosenResource extends Resource implements HasShieldPermissions
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                // Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

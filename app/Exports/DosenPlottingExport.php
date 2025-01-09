@@ -15,10 +15,13 @@ class DosenPlottingExport implements FromView
      */
     public function view(): View
     {
-        $data = DosenPlotting::select('matakuliahs.nama_mk', 'matakuliahs.semester', 'matakuliahs.sks', 'plottings.peserta', 'plottings.jumlah_kelas', 'dosen_plottings.kelas', 'dosens.nama_lengkap as dosen_pengajar', 'pembina.nama_lengkap as pembina', 'koordinator.nama_lengkap as koordinator', 'dosen_plottings.jenis')
+        $data = DosenPlotting::select('matakuliahs.nama_mk', 'matakuliahs.semester', 'matakuliahs.sks', 'plottings.peserta', 'plottings.jumlah_kelas', 'dosen_plottings.kelas', 'dosens.nama_lengkap as dosen_pengajar', 'pembina.nama_lengkap as pembina', 'koordinator.nama_lengkap as koordinator', 'dosen_plottings.jenis', 'pangkat_golongans.nama_pangkat', 'jabatans.nama_jabatan', 'konsentrasis.nama_konsentrasi')
             ->join('plottings', 'dosen_plottings.plotting_id', '=', 'plottings.id')
             ->join('matakuliahs', 'plottings.matakuliah_id', '=', 'matakuliahs.id')
+            ->leftJoin('konsentrasis', 'matakuliahs.konsentrasi_id', '=', 'konsentrasis.id')
             ->join('dosens', 'dosen_plottings.dosen_id', '=', 'dosens.id')
+            ->join('pangkat_golongans', 'dosens.pangkat_golongan_id', '=', 'pangkat_golongans.id')
+            ->join('jabatans', 'dosens.jabatan_id', '=', 'jabatans.id')
             ->leftJoin('dosens as pembina', 'plottings.pembina_id', '=', 'pembina.id')
             ->join('dosens as koordinator', 'plottings.koordinator_id', '=', 'koordinator.id')
             ->get();
@@ -29,6 +32,8 @@ class DosenPlottingExport implements FromView
             if (!isset($temp[$dosen_pengajar])) {
                 $temp[$dosen_pengajar] = [
                     'dosen_pengajar' => $value->dosen_pengajar,
+                    'pangkat_golongan' => $value->nama_pangkat,
+                    'jabatan' => $value->nama_jabatan,
                     'smt' => $value->semester,
                     'sks' => $value->sks,
                     'total_sks' => 0,
@@ -39,6 +44,7 @@ class DosenPlottingExport implements FromView
             $temp[$dosen_pengajar]['nama_mk'][] = [
                 'nama_mk' => $value->nama_mk,
                 'sks' => $value->sks,
+                'konsentrasi' => $value->nama_konsentrasi,
                 'jumlah_kelas' => count(explode(',', $value->kelas)),
                 'sks_kelas' => count(explode(',', $value->kelas)) * $value->sks,
             ];

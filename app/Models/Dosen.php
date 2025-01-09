@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Dosen extends Model
 {
@@ -15,8 +16,10 @@ class Dosen extends Model
      * @var array
      */
     protected $fillable = [
-        'nama_lengkap',
         'nidn',
+        'nama_lengkap',
+        'pangkat_golongan_id',
+        'jabatan_id',
     ];
 
     /**
@@ -27,4 +30,14 @@ class Dosen extends Model
     protected $casts = [
         'id' => 'integer',
     ];
+
+    public function PangkatGolongan(): BelongsTo
+    {
+        return $this->belongsTo(PangkatGolongan::class);
+    }
+
+    public function Jabatan(): BelongsTo
+    {
+        return $this->belongsTo(Jabatan::class);
+    }
 }

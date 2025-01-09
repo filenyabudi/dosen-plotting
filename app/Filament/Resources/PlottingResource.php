@@ -10,6 +10,7 @@ use App\Filament\Resources\PlottingResource\RelationManagers;
 use App\Models\Plotting;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use BezhanSalleh\FilamentShield\Traits\HasShieldFormComponents;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -50,7 +51,22 @@ class PlottingResource extends Resource implements HasShieldPermissions
                     ->relationship('matakuliah', 'nama_mk')
                     ->label('Mata Kuliah')
                     ->required()
-                    ->searchable(),
+                    ->searchable()
+                    ->rule(static function (Forms\Get $get, Forms\Components\Component $component): Closure {
+                        return static function (string $attribute, $value, Closure $fail) use ($get, $component) {
+                            $plotting = Plotting::where('peserta', $get('peserta'))
+                                ->where('jumlah_kelas', $get('jumlah_kelas'))
+                                ->where('koordinator_id', $get('koordinator_id'))
+                                ->where('pembina_id', $get('pembina_id'))
+                                ->where('tahun', $get('tahun'))
+                                ->where('matakuliah_id', $value)
+                                ->first();
+
+                            if ($plotting) {
+                                $fail('Plotting mata kuliah sudah dibuat');
+                            }
+                        };
+                    }),
                 Forms\Components\TextInput::make('peserta')
                     ->required()
                     ->numeric(),
@@ -77,19 +93,19 @@ class PlottingResource extends Resource implements HasShieldPermissions
             ->columns([
                 Tables\Columns\TextColumn::make('matakuliah.nama_mk')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('matakuliah.semester')
-                    ->label('Semester')
-                    ->searchable(),
+                    ->label('Semester'),
                 Tables\Columns\TextColumn::make('matakuliah.sks')
                     ->label('SKS'),
-                Tables\Columns\TextColumn::make('peserta')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('jumlah_kelas')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('peserta'),
+                Tables\Columns\TextColumn::make('jumlah_kelas'),
                 Tables\Columns\TextColumn::make('koordinator.nama_lengkap')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('pembina.nama_lengkap')
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
