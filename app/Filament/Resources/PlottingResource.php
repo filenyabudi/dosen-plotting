@@ -96,6 +96,7 @@ class PlottingResource extends Resource implements HasShieldPermissions
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('matakuliah.semester')
+                    ->sortable()
                     ->label('Semester'),
                 Tables\Columns\TextColumn::make('matakuliah.sks')
                     ->label('SKS'),
