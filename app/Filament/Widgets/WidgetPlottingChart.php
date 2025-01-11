@@ -9,6 +9,8 @@ class WidgetPlottingChart extends ChartWidget
 {
     protected static ?string $heading = 'Jumlah Pesrta Plotting';
 
+    protected int | string | array $columnSpan = 'full';
+
     protected function getData(): array
     {
         $pesertaPlotting = Plotting::with('matakuliah')

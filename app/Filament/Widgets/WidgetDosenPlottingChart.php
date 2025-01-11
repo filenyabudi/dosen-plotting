@@ -9,6 +9,8 @@ class WidgetDosenPlottingChart extends ChartWidget
 {
     protected static ?string $heading = 'Jumlah SKS Dosen';
 
+    protected int | string | array $columnSpan = 'full';
+
     protected function getData(): array
     {
         $data = DosenPlotting::select('matakuliahs.nama_mk', 'matakuliahs.semester', 'matakuliahs.sks', 'plottings.peserta', 'plottings.jumlah_kelas', 'dosen_plottings.kelas', 'dosens.nama_lengkap as dosen_pengajar', 'pembina.nama_lengkap as pembina', 'koordinator.nama_lengkap as koordinator', 'dosen_plottings.jenis', 'pangkat_golongans.nama_pangkat', 'jabatans.nama_jabatan', 'konsentrasis.nama_konsentrasi')
