@@ -11,8 +11,7 @@ class WidgetDosenPlottingChart extends ChartWidget
 
     protected function getData(): array
     {
-
-        $sksDosen = DosenPlotting::select('matakuliahs.nama_mk', 'matakuliahs.semester', 'matakuliahs.sks', 'plottings.peserta', 'plottings.jumlah_kelas', 'dosen_plottings.kelas', 'dosens.nama_lengkap as dosen_pengajar', 'pembina.nama_lengkap as pembina', 'koordinator.nama_lengkap as koordinator', 'dosen_plottings.jenis', 'pangkat_golongans.nama_pangkat', 'jabatans.nama_jabatan', 'konsentrasis.nama_konsentrasi')
+        $data = DosenPlotting::select('matakuliahs.nama_mk', 'matakuliahs.semester', 'matakuliahs.sks', 'plottings.peserta', 'plottings.jumlah_kelas', 'dosen_plottings.kelas', 'dosens.nama_lengkap as dosen_pengajar', 'pembina.nama_lengkap as pembina', 'koordinator.nama_lengkap as koordinator', 'dosen_plottings.jenis', 'pangkat_golongans.nama_pangkat', 'jabatans.nama_jabatan', 'konsentrasis.nama_konsentrasi')
             ->join('plottings', 'dosen_plottings.plotting_id', '=', 'plottings.id')
             ->join('matakuliahs', 'plottings.matakuliah_id', '=', 'matakuliahs.id')
             ->leftJoin('konsentrasis', 'matakuliahs.konsentrasi_id', '=', 'konsentrasis.id')
@@ -23,23 +22,34 @@ class WidgetDosenPlottingChart extends ChartWidget
             ->join('dosens as koordinator', 'plottings.koordinator_id', '=', 'koordinator.id')
             ->get();
 
-        $groupedData = $sksDosen->groupBy('nama_konsentrasi');
-        $sheets = [];
-
-        foreach ($groupedData as $konsentrasi => $data) {
-            $temp = [];
-            foreach ($data as $key => $value) {
-                $dosen_pengajar = $value->dosen_pengajar;
-                if (!isset($temp[$dosen_pengajar])) {
-                    $temp[$dosen_pengajar] = [
-                        'dosen_pengajar' => $value->dosen_pengajar,
-                    ];
-                }
-
-                $temp[$dosen_pengajar]['total_sks_kelas'] = isset($temp[$dosen_pengajar]['total_sks_kelas']) ? $temp[$dosen_pengajar]['total_sks_kelas'] : 0;
-
-                $temp[$dosen_pengajar]['total_sks_kelas'] += count(explode(',', $value->kelas)) * $value->sks;
+        $temp = [];
+        foreach ($data as $key => $value) {
+            $dosen_pengajar = $value->dosen_pengajar;
+            if (!isset($temp[$dosen_pengajar])) {
+                $temp[$dosen_pengajar] = [
+                    'dosen_pengajar' => $value->dosen_pengajar,
+                    'pangkat_golongan' => $value->nama_pangkat,
+                    'jabatan' => $value->nama_jabatan,
+                    'smt' => $value->semester,
+                    'sks' => $value->sks,
+                    'total_sks' => 0,
+                    'nama_mk' => [],
+                ];
             }
+
+            $temp[$dosen_pengajar]['nama_mk'][] = [
+                'nama_mk' => $value->nama_mk,
+                'sks' => $value->sks,
+                'konsentrasi' => $value->nama_konsentrasi,
+                'jumlah_kelas' => count(explode(',', $value->kelas)),
+                'sks_kelas' => count(explode(',', $value->kelas)) * $value->sks,
+            ];
+
+            $temp[$dosen_pengajar]['total_sks_kelas'] = isset($temp[$dosen_pengajar]['total_sks_kelas']) ? $temp[$dosen_pengajar]['total_sks_kelas'] : 0;
+
+            $temp[$dosen_pengajar]['total_sks_kelas'] += count(explode(',', $value->kelas)) * $value->sks;
+
+            $temp[$dosen_pengajar]['total_sks'] += $value->sks;
         }
 
         $temp = array_values($temp);
