@@ -17,7 +17,7 @@ class PlottingExport implements FromView
             ->join('matakuliahs', 'plottings.matakuliah_id', '=', 'matakuliahs.id')
             ->join('dosens', 'dosen_plottings.dosen_id', '=', 'dosens.id')
             ->leftJoin('dosens as pembina', 'plottings.pembina_id', '=', 'pembina.id')
-            ->join('dosens as koordinator', 'plottings.koordinator_id', '=', 'koordinator.id')
+            ->leftJoin('dosens as koordinator', 'plottings.koordinator_id', '=', 'koordinator.id')
             ->get();
 
         $temp = [];

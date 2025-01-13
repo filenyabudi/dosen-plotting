@@ -17,7 +17,7 @@ class GroupDosenPlottingExport implements WithMultipleSheets
             ->join('pangkat_golongans', 'dosens.pangkat_golongan_id', '=', 'pangkat_golongans.id')
             ->join('jabatans', 'dosens.jabatan_id', '=', 'jabatans.id')
             ->leftJoin('dosens as pembina', 'plottings.pembina_id', '=', 'pembina.id')
-            ->join('dosens as koordinator', 'plottings.koordinator_id', '=', 'koordinator.id')
+            ->leftJoin('dosens as koordinator', 'plottings.koordinator_id', '=', 'koordinator.id')
             ->get();
 
         $groupedData = $data->groupBy('nama_konsentrasi');
