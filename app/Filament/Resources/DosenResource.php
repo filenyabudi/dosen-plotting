@@ -5,8 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\DosenResource\Pages;
 use App\Filament\Resources\DosenResource\RelationManagers;
 use App\Models\Dosen;
-use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
-use BezhanSalleh\FilamentShield\Traits\HasShieldFormComponents;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,27 +13,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class DosenResource extends Resource implements HasShieldPermissions
+class DosenResource extends Resource
 {
-    use HasShieldFormComponents;
-
     protected static ?string $model = Dosen::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $navigationGroup = 'Master';
-
-    public static function getPermissionPrefixes(): array
-    {
-        return [
-            'view',
-            'view_any',
-            'create',
-            'update',
-            'delete',
-            'delete_any',
-        ];
-    }
 
     public static function form(Form $form): Form
     {
@@ -49,10 +33,13 @@ class DosenResource extends Resource implements HasShieldPermissions
                     ->columnSpanFull(),
                 Forms\Components\Select::make('pangkat_golongan_id')
                     ->relationship('pangkatGolongan', 'nama_pangkat')
-                    ->required(),
+                    ->default(null),
                 Forms\Components\Select::make('jabatan_id')
                     ->relationship('jabatan', 'nama_jabatan')
-                    ->required(),
+                    ->default(null),
+                Forms\Components\Select::make('konsentrasi_id')
+                    ->relationship('konsentrasi', 'nama_konsentrasi')
+                    ->default(null),
             ]);
     }
 
@@ -60,14 +47,15 @@ class DosenResource extends Resource implements HasShieldPermissions
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nidn')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('nama_lengkap')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('pangkatGolongan.nama_pangkat')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('jabatan.nama_jabatan')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('konsentrasi.nama_konsentrasi')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -84,7 +72,6 @@ class DosenResource extends Resource implements HasShieldPermissions
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

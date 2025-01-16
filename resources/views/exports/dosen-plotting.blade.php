@@ -62,7 +62,7 @@
           <td>{{ $mk['jumlah_kelas']}}</td>
           <td>{{ $mk['sks_kelas']}}</td>
           <td>{{ $mk['sks_kelas']}}</td>
-          <td></td>
+          <td>{{ $mk['keterangan'] }}</td>
         </tr>
         @endforeach
         <tr>

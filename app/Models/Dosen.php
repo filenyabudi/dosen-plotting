@@ -20,6 +20,7 @@ class Dosen extends Model
         'nama_lengkap',
         'pangkat_golongan_id',
         'jabatan_id',
+        'kosentrasi_id',
     ];
 
     /**
@@ -39,5 +40,10 @@ class Dosen extends Model
     public function Jabatan(): BelongsTo
     {
         return $this->belongsTo(Jabatan::class);
+    }
+
+    public function Konsentrasi(): BelongsTo
+    {
+        return $this->belongsTo(Konsentrasi::class);
     }
 }
