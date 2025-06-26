@@ -16,12 +16,14 @@ class WidgetDosenPlottingChart extends ChartWidget
         $data = DosenPlotting::select('matakuliahs.nama_mk', 'matakuliahs.semester', 'matakuliahs.sks', 'plottings.peserta', 'plottings.jumlah_kelas', 'dosen_plottings.kelas', 'dosens.nama_lengkap as dosen_pengajar', 'pembina.nama_lengkap as pembina', 'koordinator.nama_lengkap as koordinator', 'dosen_plottings.jenis', 'pangkat_golongans.nama_pangkat', 'jabatans.nama_jabatan', 'konsentrasis.nama_konsentrasi')
             ->join('plottings', 'dosen_plottings.plotting_id', '=', 'plottings.id')
             ->join('matakuliahs', 'plottings.matakuliah_id', '=', 'matakuliahs.id')
+            ->join('tahun_akademiks', 'plottings.tahun', '=', 'tahun_akademiks.nama_singkat')
             ->leftJoin('konsentrasis', 'matakuliahs.konsentrasi_id', '=', 'konsentrasis.id')
             ->join('dosens', 'dosen_plottings.dosen_id', '=', 'dosens.id')
             ->join('pangkat_golongans', 'dosens.pangkat_golongan_id', '=', 'pangkat_golongans.id')
             ->join('jabatans', 'dosens.jabatan_id', '=', 'jabatans.id')
             ->leftJoin('dosens as pembina', 'plottings.pembina_id', '=', 'pembina.id')
             ->join('dosens as koordinator', 'plottings.koordinator_id', '=', 'koordinator.id')
+            ->where('tahun_akademiks.aktif', '1')
             ->get();
 
         $temp = [];

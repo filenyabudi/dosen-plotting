@@ -13,7 +13,15 @@ class WidgetPlottingChart extends ChartWidget
 
     protected function getData(): array
     {
+        // $pesertaPlotting = Plotting::with('matakuliah')
+        //     ->get();
+
         $pesertaPlotting = Plotting::with('matakuliah')
+            ->join('tahun_akademiks', function ($join) {
+                $join->on('plottings.tahun', '=', 'tahun_akademiks.nama_singkat')
+                    ->where('tahun_akademiks.aktif', '1');
+            })
+            ->select('plottings.*') // Ensure all plotting columns are selected
             ->get();
 
         $arrData = [];
