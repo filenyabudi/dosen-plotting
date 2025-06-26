@@ -22,7 +22,7 @@
     <table>
         <tr>
             <td colspan="15">
-                <h1>DRAFT PENYEBARAN MATA KULIAH DAN DOSEN SEMESTER GENAP TAHUN AKADEMIK 2024/2025</h1>
+                <h1>DRAFT PENYEBARAN MATA KULIAH DAN DOSEN {{ strtoupper($tahun_akademik->nama_periode ?? '-') }}</h1>
             </td>
         </tr>
         <tr>

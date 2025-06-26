@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\DosenPlotting;
+use App\Models\TahunAkademik;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class GroupDosenPlottingExport implements WithMultipleSheets
@@ -11,6 +12,7 @@ class GroupDosenPlottingExport implements WithMultipleSheets
     {
         $data = DosenPlotting::select('matakuliahs.nama_mk', 'matakuliahs.semester', 'matakuliahs.sks', 'plottings.peserta', 'plottings.jumlah_kelas', 'dosen_plottings.kelas', 'dosens.nama_lengkap as dosen_pengajar', 'pembina.nama_lengkap as pembina', 'koordinator.nama_lengkap as koordinator', 'dosen_plottings.jenis', 'pangkat_golongans.nama_pangkat', 'jabatans.nama_jabatan', 'konsentrasis.nama_konsentrasi')
             ->join('plottings', 'dosen_plottings.plotting_id', '=', 'plottings.id')
+            ->join('tahun_akademiks', 'plottings.tahun', '=', 'tahun_akademiks.nama_singkat')
             ->join('matakuliahs', 'plottings.matakuliah_id', '=', 'matakuliahs.id')
             ->join('dosens', 'dosen_plottings.dosen_id', '=', 'dosens.id')
             ->join('pangkat_golongans', 'dosens.pangkat_golongan_id', '=', 'pangkat_golongans.id')
@@ -18,7 +20,10 @@ class GroupDosenPlottingExport implements WithMultipleSheets
             ->leftJoin('konsentrasis', 'dosens.konsentrasi_id', '=', 'konsentrasis.id')
             ->leftJoin('dosens as pembina', 'plottings.pembina_id', '=', 'pembina.id')
             ->leftJoin('dosens as koordinator', 'plottings.koordinator_id', '=', 'koordinator.id')
+            ->where('tahun_akademiks.aktif', '1')
             ->get();
+
+        $tahun_akademik = TahunAkademik::where('aktif', '1')->first();
 
         $groupedData = $data->groupBy('nama_konsentrasi');
         $sheets = [];
@@ -64,7 +69,7 @@ class GroupDosenPlottingExport implements WithMultipleSheets
 
             $temp = array_values($temp);
 
-            $sheets[] = new DosenPlottingSheet($konsentrasi, $temp);
+            $sheets[] = new DosenPlottingSheet($konsentrasi, $temp, $tahun_akademik);
         }
 
         return $sheets;

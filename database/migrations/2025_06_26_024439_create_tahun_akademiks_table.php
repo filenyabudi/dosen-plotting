@@ -11,9 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jabatans', function (Blueprint $table) {
+        Schema::create('tahun_akademiks', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_jabatan');
+            $table->string('nama_singkat')->unique();
+            $table->string('nama_periode')->unique();
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_selesai');
+            $table->boolean('aktif')->default(false);
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }
@@ -23,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jabatans');
+        Schema::dropIfExists('tahun_akademiks');
     }
 };

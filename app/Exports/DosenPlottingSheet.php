@@ -10,18 +10,21 @@ class DosenPlottingSheet implements FromView, WithTitle
 {
     protected $konsentrasi;
     protected $data;
+    protected $tahun_akademik;
 
-    public function __construct($konsentrasi, $data)
+    public function __construct($konsentrasi, $data, $tahun_akademik)
     {
         $this->konsentrasi = $konsentrasi ?: 'Konsentrasi Kosong';
         $this->data = $data;
+        $this->tahun_akademik = $tahun_akademik;
     }
 
     public function view(): View
     {
         return view('exports.dosen-plotting', [
             'konsentrasi' => $this->konsentrasi,
-            'plotting' => $this->data
+            'plotting' => $this->data,
+            'tahun_akademik' => $this->tahun_akademik,
         ]);
     }
 

@@ -36,7 +36,7 @@
             <th rowspan="3">Pangkat/Golongan</th>
             <th rowspan="3">Jafung</th>
             <th rowspan="3">Mata Kuliah Yang Diampu</th>
-            <th colspan="4">Tahun Akademik</th>
+            <th colspan="4">{{ $tahun_akademik->nama_periode }}</th>
             <th rowspan="3">Keterangan</th>
         </tr>
         <tr>

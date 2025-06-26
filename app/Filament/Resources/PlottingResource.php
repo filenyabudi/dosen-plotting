@@ -81,15 +81,28 @@ class PlottingResource extends Resource implements HasShieldPermissions
                     ->relationship('pembina', 'nama_lengkap')
                     ->label('Nama Pembina')
                     ->searchable(),
-                Forms\Components\TextInput::make('tahun')
-                    ->required()
-                    ->numeric(),
+                Select::make('tahun')
+                    ->options(
+                        \App\Models\TahunAkademik::where('aktif', '1')
+                            ->pluck('nama_singkat', 'nama_singkat')
+                    )
+                    ->label('Tahun Akademik')
+                    ->searchable()
+                    ->required(),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->query(
+                Plotting::query()
+                    ->select('plottings.*')
+                    ->join('tahun_akademiks', function ($join) {
+                        $join->on('plottings.tahun', '=', 'tahun_akademiks.nama_singkat')
+                            ->where('tahun_akademiks.aktif', '1');
+                    })
+            )
             ->columns([
                 Tables\Columns\TextColumn::make('matakuliah.nama_mk')
                     ->numeric()
@@ -106,6 +119,9 @@ class PlottingResource extends Resource implements HasShieldPermissions
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('pembina.nama_lengkap')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('tahun')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

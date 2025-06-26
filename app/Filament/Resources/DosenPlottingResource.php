@@ -89,9 +89,18 @@ class DosenPlottingResource extends Resource implements HasShieldPermissions
     public static function table(Table $table): Table
     {
         return $table
+            ->query(
+                DosenPlotting::query()
+                    ->whereHas('plotting', function ($query) {
+                        $query->join('tahun_akademiks', function ($join) {
+                            $join->on('plottings.tahun', '=', 'tahun_akademiks.nama_singkat')
+                                ->where('tahun_akademiks.aktif', '1');
+                        })
+                            ->select('plottings.*');
+                    })
+            )
             ->columns([
                 Tables\Columns\TextColumn::make('dosen.nama_lengkap')
-                    ->numeric()
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('jenis'),
