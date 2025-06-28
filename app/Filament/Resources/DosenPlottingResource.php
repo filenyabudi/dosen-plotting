@@ -8,6 +8,8 @@ use App\Exports\PlottingExport;
 use App\Filament\Resources\DosenPlottingResource\Pages;
 use App\Models\DosenPlotting;
 use App\Models\Plotting;
+use App\Models\TahunAkademik;
+use Barryvdh\DomPDF\Facade\Pdf;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use BezhanSalleh\FilamentShield\Traits\HasShieldFormComponents;
 use Closure;
@@ -140,6 +142,76 @@ class DosenPlottingResource extends Resource implements HasShieldPermissions
                         return Excel::download(new GroupDosenPlottingExport, 'draft-dosen.xlsx');
                     })
                     ->icon('heroicon-o-arrow-down-tray'),
+                Action::make('cetak_dosen_plotting')
+                    ->label('Cetak Petikan Dosen')
+                    ->icon('heroicon-o-printer')
+                    ->action(function () {
+                        $dosenPlotting = DosenPlotting::select('matakuliahs.nama_mk', 'matakuliahs.semester', 'matakuliahs.sks', 'plottings.peserta', 'plottings.jumlah_kelas', 'dosen_plottings.kelas', 'dosens.nama_lengkap as dosen_pengajar', 'pembina.nama_lengkap as pembina', 'koordinator.nama_lengkap as koordinator', 'dosen_plottings.jenis', 'pangkat_golongans.nama_pangkat', 'jabatans.nama_jabatan', 'konsentrasis.nama_konsentrasi')
+                            ->join('plottings', 'dosen_plottings.plotting_id', '=', 'plottings.id')
+                            ->join('tahun_akademiks', 'plottings.tahun', '=', 'tahun_akademiks.nama_singkat')
+                            ->join('matakuliahs', 'plottings.matakuliah_id', '=', 'matakuliahs.id')
+                            ->join('dosens', 'dosen_plottings.dosen_id', '=', 'dosens.id')
+                            ->join('pangkat_golongans', 'dosens.pangkat_golongan_id', '=', 'pangkat_golongans.id')
+                            ->join('jabatans', 'dosens.jabatan_id', '=', 'jabatans.id')
+                            ->leftJoin('konsentrasis', 'dosens.konsentrasi_id', '=', 'konsentrasis.id')
+                            ->leftJoin('dosens as pembina', 'plottings.pembina_id', '=', 'pembina.id')
+                            ->leftJoin('dosens as koordinator', 'plottings.koordinator_id', '=', 'koordinator.id')
+                            ->where('tahun_akademiks.aktif', '1')
+                            ->get();
+
+                        $tahun_akademik = TahunAkademik::where('aktif', '1')->first();
+
+                        $temp = [];
+                        foreach ($dosenPlotting as $key => $value) {
+                            $dosen_pengajar = $value->dosen_pengajar;
+                            if (!isset($temp[$dosen_pengajar])) {
+                                $temp[$dosen_pengajar] = [
+                                    'dosen_pengajar' => $value->dosen_pengajar,
+                                    'pangkat_golongan' => $value->nama_pangkat,
+                                    'jabatan' => $value->nama_jabatan,
+                                    'smt' => $value->semester,
+                                    'sks' => $value->sks,
+                                    'total_sks' => 0,
+                                    'nama_mk' => [],
+                                ];
+                            }
+
+                            $keterangan = null;
+                            if ($value->dosen_pengajar == $value->koordinator) {
+                                $keterangan = "Koordinator";
+                            } else if ($value->dosen_pengajar == $value->pembina) {
+                                $keterangan = "Pembina";
+                            }
+
+                            $temp[$dosen_pengajar]['nama_mk'][] = [
+                                'nama_mk' => $value->nama_mk,
+                                'sks' => $value->sks,
+                                'konsentrasi' => $value->nama_konsentrasi,
+                                'jumlah_kelas' => count(explode(',', $value->kelas)),
+                                'sks_kelas' => count(explode(',', $value->kelas)) * $value->sks,
+                                'keterangan' => $keterangan,
+                            ];
+
+                            $temp[$dosen_pengajar]['total_sks_kelas'] = isset($temp[$dosen_pengajar]['total_sks_kelas']) ? $temp[$dosen_pengajar]['total_sks_kelas'] : 0;
+
+                            $temp[$dosen_pengajar]['total_sks_kelas'] += count(explode(',', $value->kelas)) * $value->sks;
+
+                            $temp[$dosen_pengajar]['total_sks'] += $value->sks;
+                        }
+
+                        $temp = array_values($temp);
+
+                        $data = [
+                            'plotting' => $temp,
+                            'tahun_akademik' => $tahun_akademik,
+                        ];
+
+                        $pdf = Pdf::loadView('pdf.petikan-dosen', $data)
+                            ->setPaper('a4', 'portrait');
+                        return response()->streamDownload(function () use ($pdf) {
+                            echo $pdf->stream();
+                        }, 'dosen-plotting.pdf');
+                    })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
