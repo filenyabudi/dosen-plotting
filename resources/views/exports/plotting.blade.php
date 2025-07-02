@@ -60,7 +60,9 @@
             <td>{{ $dosen['jumlah_kelas']}}</td>
             <td>
                 {{ $dosen['nama_dosen']}}
-                @if ($dosen['jenis'] == "Asisten Dosen" )
+                @if ($dosen['jenis'] == "Asisten Dosen")
+                ({{$dosen['jenis']}})
+                @elseif ($dosen['jenis'] == "Pembina")
                 ({{$dosen['jenis']}})
                 @endif
             </td>

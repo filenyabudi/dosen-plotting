@@ -60,6 +60,7 @@ class DosenPlottingResource extends Resource implements HasShieldPermissions
                     ->options([
                         'Dosen Pengajar' => 'Dosen Pengajar',
                         'Asisten Dosen' => 'Asisten Dosen',
+                        'Pembina' => 'Pembina',
                     ])
                     ->required(),
                 Select::make('plotting_id')
