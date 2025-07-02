@@ -145,7 +145,18 @@ class DosenPlottingResource extends Resource implements HasShieldPermissions
                 Action::make('cetak_dosen_plotting')
                     ->label('Cetak Petikan Dosen')
                     ->icon('heroicon-o-printer')
-                    ->action(function () {
+                    ->form([
+                        Forms\Components\TextInput::make('nomor_sk')
+                            ->label('Nomor SK')
+                            ->required()
+                            ->placeholder('Masukkan nomor SK'),
+                        Forms\Components\DatePicker::make('tanggal_sk')
+                            ->label('Tanggal SK')
+                            ->required()
+                            ->default(now())
+                            ->format('Y-m-d'),
+                    ])
+                    ->action(function (array $data) {
                         $dosenPlotting = DosenPlotting::select('matakuliahs.nama_mk', 'matakuliahs.semester', 'matakuliahs.sks', 'plottings.peserta', 'plottings.jumlah_kelas', 'dosen_plottings.kelas', 'dosens.nama_lengkap as dosen_pengajar', 'pembina.nama_lengkap as pembina', 'koordinator.nama_lengkap as koordinator', 'dosen_plottings.jenis', 'pangkat_golongans.nama_pangkat', 'jabatans.nama_jabatan', 'konsentrasis.nama_konsentrasi')
                             ->join('plottings', 'dosen_plottings.plotting_id', '=', 'plottings.id')
                             ->join('tahun_akademiks', 'plottings.tahun', '=', 'tahun_akademiks.nama_singkat')
@@ -201,12 +212,14 @@ class DosenPlottingResource extends Resource implements HasShieldPermissions
 
                         $temp = array_values($temp);
 
-                        $data = [
+                        $pdfData = [
                             'plotting' => $temp,
                             'tahun_akademik' => $tahun_akademik,
+                            'nomor_sk' => $data['nomor_sk'],
+                            'tanggal' => $data['tanggal_sk'],
                         ];
 
-                        $pdf = Pdf::loadView('pdf.petikan-dosen', $data)
+                        $pdf = Pdf::loadView('pdf.petikan-dosen', $pdfData)
                             ->setPaper('a4', 'portrait');
                         return response()->streamDownload(function () use ($pdf) {
                             echo $pdf->stream();

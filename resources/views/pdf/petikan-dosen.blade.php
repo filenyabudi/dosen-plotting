@@ -124,12 +124,12 @@
                     <tr>
                         <td>Nomor</td>
                         <td>:</td>
-                        <td></td>
+                        <td>{{ $nomor_sk ?? '' }}</td>
                     </tr>
                     <tr>
                         <td>Tanggal</td>
                         <td>:</td>
-                        <td>{{ \Carbon\Carbon::parse($tanggal ?? now())->translatedFormat('d F Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($tanggal ?? now())->locale('id')->translatedFormat('d F Y') }}</td>
                     </tr>
                 </table>
             </div>
@@ -184,7 +184,7 @@
                 <table>
                     <tr>
                         <td></td>
-                        <td>Bandung, {{ \Carbon\Carbon::parse($tanggal ?? now())->translatedFormat('d F Y') }}</td>
+                        <td>Bandung, {{ \Carbon\Carbon::parse($tanggal ?? now())->locale('id')->translatedFormat('d F Y') }}</td>
                     </tr>
                     <tr>
                         <td style="padding-right: 150px">Kepala Biro BELMAWABUD,</td>
