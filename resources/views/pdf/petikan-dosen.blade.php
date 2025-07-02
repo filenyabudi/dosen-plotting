@@ -191,8 +191,8 @@
                         <td>Rektor,</td>
                     </tr>
                     <tr style="height: 60px;">
-                        <td style="padding-top: 30px; padding-bottom: 30px;"></td>
-                        <td style="padding-top: 30px; padding-bottom: 30px;"></td>
+                        <td style="padding-top: 30px; padding-bottom: 30px;">TTD</td>
+                        <td style="padding-top: 30px; padding-bottom: 30px;">TTD</td>
                     </tr>
                     <tr>
                         <td>Hj.R. Iin Martina, S.H. </td>
